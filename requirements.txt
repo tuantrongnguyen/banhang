@@ -1,0 +1,10 @@
+# Python 3.14 compatible stack
+fastapi>=0.120.0,<1.0
+uvicorn[standard]>=0.34.0,<1.0
+SQLAlchemy>=2.0.45,<3.0
+python-jose[cryptography]>=3.3.0,<4.0
+bcrypt>=4.2.0,<6.0
+python-multipart>=0.0.20,<1.0
+pydantic>=2.10.0,<3.0
+pydantic-settings>=2.7.0,<3.0
+psycopg[binary]>=3.2.0,<4.0   # chỉ cần khi dùng PostgreSQL online
