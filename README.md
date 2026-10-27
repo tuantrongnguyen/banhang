@@ -66,3 +66,9 @@ python restore.py backups/shop_YYYYMMDD_HHMMSS.db
 ```
 
 Cũng có thể bấm "Sao lưu" qua API `/api/backup` nếu bạn nối thêm nút trong giao diện quản trị.
+
+## Xuất Excel
+- **Trước khi thanh toán:** nút **Xuất Excel** trong popup xác nhận tải *phiếu tạm tính* (không lưu đơn, không trừ kho).
+- **Khi thanh toán:** trong popup xác nhận có ô "Tự động tải file Excel sau khi thanh toán" (nhớ lựa chọn). Thanh toán xong cũng có nút **Xuất Excel** để tải hóa đơn của đơn vừa bán.
+- **Tab Đơn hàng:** lọc theo ngày rồi bấm **Xuất Excel** để tải danh sách (sheet "Đơn hàng" có dòng tổng, sheet "Chi tiết mặt hàng"). Trong chi tiết từng đơn có nút xuất hóa đơn riêng.
+- Cần thư viện `openpyxl` (đã có trong `requirements.txt`).

@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sổ Bán Hàng</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        ink: { DEFAULT:'#13213B', 50:'#EEF1F6', 100:'#D8DEEA', 300:'#8C9AB8', 500:'#3C4D73', 700:'#1E2E4F', 900:'#13213B', 950:'#0C1527' },
+        paper: '#F3F2EE',
+        amber: { 50:'#FBF3E2', 100:'#F3E1B6', 400:'#D89A2A', 500:'#BD8322', 600:'#9C6B1B' },
+        leaf: { 50:'#E9F3EC', 100:'#C9E4D2', 500:'#2E7D52', 600:'#236340' },
+        brick:{ 50:'#FBECEA', 100:'#F3CFC9', 500:'#B6473A', 600:'#963A30' }
+      },
+      fontFamily: {
+        head: ['Manrope','sans-serif'],
+        body: ['"IBM Plex Sans"','sans-serif'],
+        num: ['"IBM Plex Mono"','monospace'],
+      }
+    }
+  }
+}
+</script>
+<style>
+  body{font-family:'IBM Plex Sans',sans-serif;background:#F3F2EE}
+  .font-head{font-family:'Manrope',sans-serif}
+  .font-num{font-family:'IBM Plex Mono',monospace}
+  ::-webkit-scrollbar{width:8px;height:8px}
+  ::-webkit-scrollbar-thumb{background:#C9CBD4;border-radius:8px}
+  .hide{display:none !important}
+  .nav-item.active{background:#1E2E4F;color:#fff}
+  .nav-item.active .ni-dot{background:#D89A2A}
+  input[type=text],input[type=number],input[type=password],input[type=search],input[type=date],select,textarea{
+    background:#fff;border:1px solid #DBD8CF;border-radius:10px;padding:10px 12px;width:100%;
+    font-size:14px;outline:none;transition:border-color .12s;
+  }
+  input:focus,select:focus,textarea:focus{border-color:#13213B;box-shadow:0 0 0 3px rgba(19,33,59,.08)}
+  .btn{display:inline-flex;align-items:center;gap:6px;justify-content:center;border-radius:10px;padding:10px 16px;font-weight:600;font-size:14px;cursor:pointer;transition:.12s;border:1px solid transparent}
+  .btn-primary{background:#13213B;color:#fff}
+  .btn-primary:hover{background:#1E2E4F}
+  .btn-amber{background:#BD8322;color:#fff}
+  .btn-amber:hover{background:#9C6B1B}
+  .btn-ghost{background:#fff;color:#13213B;border-color:#DBD8CF}
+  .btn-ghost:hover{border-color:#13213B}
+  .btn-danger{background:#fff;color:#B6473A;border-color:#F3CFC9}
+  .btn-danger:hover{background:#FBECEA}
+  .card{background:#fff;border:1px solid #E6E4DC;border-radius:14px}
+  .th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#6B7389;font-weight:600;text-align:left;padding:10px 14px;border-bottom:1px solid #E6E4DC}
+  .td{padding:12px 14px;font-size:14px;border-bottom:1px solid #EFEEE8;color:#1A2338}
+  tr:last-child .td{border-bottom:none}
+  .modal-backdrop{background:rgba(12,21,39,.45);backdrop-filter:blur(1px)}
+  .ticket-edge{background-image:repeating-linear-gradient(90deg,#DBD8CF 0 8px,transparent 8px 16px)}
+  .toast{animation:slidein .18s ease-out}
+  @keyframes slidein{from{transform:translateY(8px);opacity:0}to{transform:translateY(0);opacity:1}}
+  .pill{font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px}
+</style>
+</head>
+<body class="font-body text-ink-900">
+
+<!-- ======================= LOGIN ======================= -->
+<div id="login" class="min-h-screen grid lg:grid-cols-2">
+  <div class="hidden lg:flex flex-col justify-between bg-ink-900 text-white p-12 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-[0.07]" style="background-image:radial-gradient(circle at 20% 20%, white 1px, transparent 1px);background-size:22px 22px"></div>
+    <div class="relative">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-lg bg-amber-500 flex items-center justify-center font-head font-800 text-ink-950">S</div>
+        <span class="font-head font-800 text-lg tracking-tight">Sổ Bán Hàng</span>
+      </div>
+    </div>
+    <div class="relative max-w-md">
+      <p class="font-head text-[34px] leading-[1.18] font-700">Quản lý bán hàng,<br>kho và dòng tiền<br>trong một chỗ.</p>
+      <p class="mt-4 text-ink-300 text-[15px] leading-relaxed">Bán hàng tại quầy, theo dõi tồn kho, khách hàng và lợi nhuận theo thời gian thực — dữ liệu lưu cục bộ, chủ động sao lưu bất cứ lúc nào.</p>
+    </div>
+    <div class="relative flex gap-8 text-sm text-ink-300 font-num">
+      <div><div class="text-white text-xl font-head font-700">100%</div>kiểm soát dữ liệu</div>
+      <div><div class="text-white text-xl font-head font-700">0đ</div>phí hàng tháng</div>
+      <div><div class="text-white text-xl font-head font-700">SQLite</div>database cục bộ</div>
+    </div>
+  </div>
+  <div class="flex items-center justify-center p-8">
+    <div class="w-full max-w-sm">
+      <div class="lg:hidden flex items-center gap-2.5 mb-8">
+        <div class="w-9 h-9 rounded-lg bg-amber-500 flex items-center justify-center font-head font-800 text-ink-950">S</div>
+        <span class="font-head font-800 text-lg">Sổ Bán Hàng</span>
+      </div>
+      <h1 class="font-head text-2xl font-700 text-ink-900">Đăng nhập</h1>
+      <p class="text-ink-300 text-sm mt-1 mb-7">Nhập tài khoản để vào hệ thống quản lý.</p>
+      <div class="space-y-3.5">
+        <div>
+          <label class="text-xs font-600 text-ink-500 mb-1.5 block">Tài khoản</label>
+          <input id="u" type="text" value="admin" autocomplete="username">
+        </div>
+        <div>
+          <label class="text-xs font-600 text-ink-500 mb-1.5 block">Mật khẩu</label>
+          <input id="p" type="password" value="admin123" autocomplete="current-password">
+        </div>
+        <p id="msg" class="text-brick-500 text-sm min-h-[18px]"></p>
+        <button onclick="login()" class="btn btn-primary w-full py-3">Đăng nhập →</button>
+      </div>
+      <div class="mt-7 pt-5 border-t border-ink-100 text-xs text-ink-300 space-y-1">
+        <p class="font-600 text-ink-500">Tài khoản demo</p>
+        <p>Quản trị: <span class="font-num">admin / admin123</span></p>
+        <p>Nhân viên: <span class="font-num">nhanvien / nv123</span></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= APP ======================= -->
+<div id="app" class="hide min-h-screen lg:flex">
+  <aside class="bg-ink-900 text-white lg:w-60 lg:flex lg:flex-col lg:fixed lg:inset-y-0">
+    <div class="flex items-center gap-2.5 px-5 py-5">
+      <div class="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center font-head font-800 text-ink-950 text-sm">S</div>
+      <span class="font-head font-800 tracking-tight">Sổ Bán Hàng</span>
+    </div>
+    <nav id="nav" class="flex-1 overflow-y-auto px-3 py-2 space-y-0.5"></nav>
+    <div class="px-3 py-4 border-t border-white/10">
+      <div class="flex items-center gap-2.5 px-2 py-1.5">
+        <div class="w-8 h-8 rounded-full bg-ink-700 flex items-center justify-center font-head font-700 text-xs" id="avatar"></div>
+        <div class="min-w-0">
+          <div id="user" class="text-sm font-600 truncate"></div>
+          <div id="userRole" class="text-xs text-ink-300"></div>
+        </div>
+      </div>
+      <button onclick="logout()" class="btn btn-ghost w-full mt-3 !bg-transparent !text-ink-100 !border-white/15 hover:!border-white/40 text-sm">Đăng xuất</button>
+    </div>
+  </aside>
+
+  <div class="flex-1 lg:ml-60 min-w-0">
+    <header class="sticky top-0 z-20 bg-paper/90 backdrop-blur border-b border-ink-100 px-5 lg:px-8 py-4 flex items-center justify-between">
+      <div>
+        <h1 id="pageTitle" class="font-head text-xl font-700 text-ink-900">Tổng quan</h1>
+        <p id="pageSub" class="text-xs text-ink-300 mt-0.5"></p>
+      </div>
+      <div class="text-right hidden sm:block">
+        <div id="clock" class="font-num text-sm text-ink-500"></div>
+      </div>
+    </header>
+    <main id="main" class="p-5 lg:p-8 max-w-6xl"></main>
+  </div>
+</div>
+
+<!-- toast / modal roots -->
+<div id="toasts" class="fixed bottom-5 right-5 z-[60] space-y-2 w-80"></div>
+<div id="modalRoot"></div>
+
+<script src="/app.js"></script>
+</body>
+</html>
