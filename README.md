@@ -1,0 +1,86 @@
+# Sổ Bán Hàng V6 — bản giao diện chuyên nghiệp
+
+Bản làm lại của ứng dụng quản lý bán hàng gốc (V5), giữ nguyên kiến trúc **FastAPI + SQLAlchemy + SQLite**,
+viết lại toàn bộ giao diện cho chuyên nghiệp và dễ dùng hơn: sidebar điều hướng, biểu đồ doanh thu,
+modal thêm/sửa dữ liệu, thông báo (toast), và bảng dữ liệu rõ ràng thay cho danh sách thô.
+
+## Cài đặt (Windows)
+
+```bat
+python -m venv .venv
+.venv\Scripts\activate
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+copy .env.example .env
+python run.py
+```
+
+Mở trình duyệt: http://127.0.0.1:8000
+
+Nếu `python` không nhận, thử `py -3.14` thay cho `python` ở bước tạo venv.
+
+## macOS / Linux
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip
+pip install -r requirements.txt
+cp .env.example .env
+python run.py
+```
+
+## Tài khoản demo
+- Quản trị viên: `admin` / `admin123`
+- Nhân viên: `nhanvien` / `nv123`
+
+Database SQLite được tạo tự động tại `data/shop.db` khi chạy lần đầu, kèm 3 sản phẩm mẫu.
+
+## Những gì đã thay đổi so với bản gốc
+
+**Giao diện**
+- Sidebar điều hướng cố định theo quyền hạn, topbar hiển thị giờ hiện tại.
+- Trang Tổng quan có biểu đồ doanh thu/lợi nhuận 7 ngày (Chart.js), top sản phẩm bán chạy, cảnh báo tồn kho thấp.
+- Bán hàng (POS): lưới sản phẩm, giỏ hàng có nút tăng/giảm số lượng, tính tiền thừa tự động.
+- Form thêm/sửa dữ liệu hiển thị dạng modal thay vì chèn thẳng vào trang.
+- Thông báo dạng toast thay cho `alert()`.
+- Font chữ Manrope (tiêu đề) + IBM Plex Sans (nội dung) + IBM Plex Mono (số liệu) hỗ trợ tốt tiếng Việt.
+
+**Backend (API mới/bổ sung)**
+- `PUT /api/products/{id}` — sửa sản phẩm, `DELETE /api/products/{id}` — ẩn sản phẩm (xoá mềm).
+- `PUT /api/customers/{id}` — sửa thông tin khách hàng.
+- `GET /api/orders/{id}` — xem chi tiết từng đơn hàng (danh sách mặt hàng).
+- `GET /api/stock/history` — lịch sử nhập/xuất/điều chỉnh kho.
+- `DELETE /api/expenses/{id}` — xoá khoản chi.
+- `PUT /api/users/{id}` — khoá/mở khoá tài khoản, đổi vai trò.
+- `GET /api/dashboard` trả thêm dữ liệu biểu đồ 7 ngày, top sản phẩm, danh sách hàng sắp hết.
+
+Toàn bộ logic phân quyền (admin / nhân viên theo `permissions`), mã hoá mật khẩu bằng `bcrypt`,
+xác thực bằng JWT, và cơ chế backup/restore SQLite được giữ nguyên như bản gốc.
+
+## Backup / Restore
+
+```bash
+python backup.py
+python restore.py backups/shop_YYYYMMDD_HHMMSS.db
+```
+
+Cũng có thể bấm "Sao lưu" qua API `/api/backup` nếu bạn nối thêm nút trong giao diện quản trị.
+
+## Xuất Excel
+- **Trước khi thanh toán:** nút **Xuất Excel** trong popup xác nhận tải *phiếu tạm tính* (không lưu đơn, không trừ kho).
+- **Khi thanh toán:** trong popup xác nhận có ô "Tự động tải file Excel sau khi thanh toán" (nhớ lựa chọn). Thanh toán xong cũng có nút **Xuất Excel** để tải hóa đơn của đơn vừa bán.
+- **Tab Đơn hàng:** lọc theo ngày rồi bấm **Xuất Excel** để tải danh sách (sheet "Đơn hàng" có dòng tổng, sheet "Chi tiết mặt hàng"). Trong chi tiết từng đơn có nút xuất hóa đơn riêng.
+- Cần thư viện `openpyxl` (đã có trong `requirements.txt`).
+
+## Mua hàng từ đại lý (chỉ Admin)
+- Tab **Mua hàng đại lý → Danh sách đại lý**: quản lý mã số, tên đại lý, mã số thuế, địa chỉ, SĐT (mã số để trống sẽ tự tạo DL001, DL002...).
+- Tab **Phiếu mua hàng**: chọn đại lý, thêm nhiều sản phẩm với số lượng và giá nhập. Lưu phiếu sẽ cộng tồn kho, ghi lịch sử kho và cập nhật giá vốn theo bình quân gia quyền.
+
+## Danh mục sản phẩm (chỉ Admin)
+- Tab **Sản phẩm → Danh mục**: thêm, đổi tên, xóa danh mục (chỉ xóa được danh mục chưa có sản phẩm). Bấm số sản phẩm để xem các sản phẩm trong danh mục.
+- Trong form thêm/sửa sản phẩm: chọn danh mục có sẵn hoặc bấm **+ Mới** để tạo nhanh ngay tại chỗ, không mất dữ liệu đang nhập.
+- Danh mục đã gõ tay ở sản phẩm cũ được tự đưa vào danh sách khi khởi động.
+
+## Mã tự động
+- **Mã sản phẩm** (SP001, SP002...) và **mã khách hàng** (KH0001, KH0002...) được hệ thống tự tạo khi lưu; ô mã chỉ để xem. Khách hàng cũ chưa có mã được tự gán khi khởi động.
