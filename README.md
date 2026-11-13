@@ -84,3 +84,22 @@ Cũng có thể bấm "Sao lưu" qua API `/api/backup` nếu bạn nối thêm n
 
 ## Mã tự động
 - **Mã sản phẩm** (SP001, SP002...) và **mã khách hàng** (KH0001, KH0002...) được hệ thống tự tạo khi lưu; ô mã chỉ để xem. Khách hàng cũ chưa có mã được tự gán khi khởi động.
+
+## Sửa / xóa (Admin)
+- **Đơn hàng**: sửa khách, thanh toán, sản phẩm, số lượng, chiết khấu, phí ship; xóa đơn. Kho tự điều chỉnh theo chênh lệch (ghi vào lịch sử kho).
+- **Khách hàng**: xóa khách; các đơn cũ vẫn giữ tên khách nhưng không còn liên kết.
+- **Phiếu mua hàng**: sửa/xóa phiếu; kho và giá vốn bình quân được tính lại. Không cho sửa/xóa nếu hàng đã bán bớt làm tồn kho âm.
+
+## Hóa đơn
+- Màn hình **Bán hàng** có nút chọn **Không hóa đơn / Có hóa đơn**. Chọn "Có hóa đơn" thì popup xác nhận yêu cầu thông tin người mua (tên, mã số thuế, địa chỉ - tự điền từ khách hàng đã chọn) và hệ thống cấp số hóa đơn HD000001, HD000002...
+- Tab **Hóa đơn** (cần quyền "Hóa đơn"): tìm kiếm theo số hóa đơn/người mua/mã số thuế/địa chỉ/số đơn, lọc ngày, sửa thông tin người mua và ngày lập, in hóa đơn (A5), xuất Excel, xóa hóa đơn (Admin).
+- Đơn đã bán không hóa đơn có thể xuất hóa đơn sau trong chi tiết đơn hàng.
+- Đây là hóa đơn quản lý nội bộ, chưa kết nối hóa đơn điện tử của cơ quan thuế.
+
+- Thông tin người mua trên hóa đơn có thêm **số điện thoại**. Khi bán có hóa đơn (hoặc xuất hóa đơn cho đơn cũ), người mua được **lưu vào danh sách khách hàng**: dùng khách đã chọn (chỉ bổ sung thông tin còn trống), hoặc tìm khách trùng mã số thuế / SĐT, không có thì tạo khách mới với mã KH tự sinh.
+- Tab **Đơn hàng** có bộ lọc **Tất cả / Có hóa đơn / Không hóa đơn** (áp dụng cả khi xuất Excel).
+
+## Sản phẩm
+- **Mã sản phẩm**: để trống thì hệ thống tự tạo (SP001, SP002...), hoặc tự nhập mã riêng (ví dụ mã vạch). Có thể đổi mã khi sửa sản phẩm.
+- Nút **Xóa**: sản phẩm chưa có giao dịch sẽ bị xóa hẳn; đã có lịch sử bán/nhập kho thì được ẩn khỏi danh sách để giữ nguyên số liệu cũ (mã của sản phẩm đã xóa được giải phóng để dùng lại).
+- Cột **Đại lý nhập hàng**: chọn trong form sản phẩm, và tự cập nhật theo phiếu mua hàng từ đại lý gần nhất.
